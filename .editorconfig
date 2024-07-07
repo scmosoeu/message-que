@@ -4,15 +4,9 @@ root = true
 indent_style = tab
 trim_trailing_whitespace = true
 indent_size = 4
+insert_final_newline = true
 
-[*.ini]
+[*.json, *.ini, *.yml]
 indent_style = tab
-indent_size = 2
-
-[*.json]
-indent_style = tab
-indent_size = 2
-
-[*.yml]
-indent_style = tab
+trim_trailing_whitespace = true
 indent_size = 2

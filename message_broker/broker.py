@@ -1,5 +1,4 @@
-import pika 
-import requests
+import pika
 
 
 class RabbitMQBroker:
@@ -27,8 +26,8 @@ class RabbitMQBroker:
         # creating a que to which messages will be delivered
         # To ensure that the queue will survive a RabbitMQ node restart, specified 'durable'
         self.channel.queue_declare(queue=routing_key, durable=True)
-    
-    
+
+
     def publish_message(self, msg: str) -> None:
         """
         Publish message in RabbitMQ
@@ -49,16 +48,16 @@ class RabbitMQBroker:
 
         self.connection.close()
 
-    
+
     def consume_message(self, callback) -> None:
         """
         Consume the published message
         """
 
-        # Specify that the particular callback function 
+        # Specify that the particular callback function
         # should receive messages from the queue
         self.channel.basic_consume(
-            queue=self.routing_key, 
+            queue=self.routing_key,
             on_message_callback=callback
         )
 

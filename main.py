@@ -1,9 +1,8 @@
 import os
+import pika
 import requests
 
 from fastapi import FastAPI
-
-from message_broker.broker import RabbitMQBroker
 
 rabbitmq_host = os.getenv('RABBITMQ_HOST')
 rabbitmq_queue = os.getenv('RABBITMQ_QUEUE')
@@ -24,12 +23,19 @@ def send_message(msg: str) -> None:
     msg: A message to send to RabbitMQ broker
     """
 
-    rmq = RabbitMQBroker(
-        hostname=rabbitmq_host,
-        routing_key=rabbitmq_queue
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(rabbitmq_host)
     )
 
-    rmq.publish_message(msg)
+    channel = connection.channel()
+
+    channel.queue_declare(queue=rabbitmq_queue)
+
+    channel.basic_publish(exchange='', routing_key=rabbitmq_queue, body=message)
+
+    print(f"sent message: {msg}")
+
+    connection.close()
 
 
 def on_message_received(ch, method, properties, body):
@@ -49,9 +55,20 @@ def on_message_received(ch, method, properties, body):
 @app.get("/")
 def retrieve_message():
 
-    rmq = RabbitMQBroker(
-        hostname=rabbitmq_host,
-        routing_key=rabbitmq_queue
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(rabbitmq_host)
     )
 
-    rmq.consume_message(callback=on_message_received)
+    channel = connection.channel()
+
+    channel.queue_declare(queue=rabbitmq_queue)
+
+    channel.basic_consume(
+        queue=rabbitmq_queue,
+        auto_ack=True,
+        on_message_callback=on_message_received
+    )
+
+    print("started consuming")
+
+    channel.start_consuming()

@@ -9,7 +9,6 @@ rabbitmq_queue = os.getenv('RABBITMQ_QUEUE')
 api_host = os.getenv('API_HOST')
 api_port = os.getenv('API_HOST')
 
-
 app = FastAPI()
 
 
@@ -22,7 +21,7 @@ def send_message(msg: str) -> None:
     -----------
     msg: A message to send to RabbitMQ broker
     """
-
+    print(f"sent message: {msg}")
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(rabbitmq_host)
     )

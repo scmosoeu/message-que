@@ -9,8 +9,6 @@ rabbitmq_host = os.getenv('RABBITMQ_HOST')
 rabbitmq_queue = os.getenv('RABBITMQ_QUEUE')
 api_host = os.getenv('API_HOST')
 api_port = os.getenv('API_HOST')
-redis_host = os.getenv('REDIS_HOST')
-redis_port = os.getenv('REDIS_PORT')
 
 
 app = FastAPI()
@@ -34,7 +32,6 @@ def send_message(msg: str) -> None:
     )
 
     rmq.publish_message(msg)
-
 
 
 def on_message_received(ch, method, properties, body):

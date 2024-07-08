@@ -13,10 +13,8 @@ api_port = os.getenv('API_HOST')
 
 app = FastAPI()
 
-rabbitmq_host = os.getenv('RABBITMQ_HOST')
-rabbitmq_queue = os.getenv('RABBITMQ_QUEUE')
 
-@app.post("/")
+@app.post("/{msg}")
 def send_message(msg: str) -> None:
     """
     Publish message in RabbitMQ

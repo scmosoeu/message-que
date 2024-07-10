@@ -30,7 +30,7 @@ def send_message(msg: str) -> dict:
 
     channel.queue_declare(queue=rabbitmq_queue)
 
-    channel.basic_publish(exchange='', routing_key=rabbitmq_queue, body=message)
+    channel.basic_publish(exchange='', routing_key=rabbitmq_queue, body=msg)
 
     print(f"sent message: {msg}")
 

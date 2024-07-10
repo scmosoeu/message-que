@@ -13,7 +13,7 @@ app = FastAPI()
 
 
 @app.post("/{msg}")
-def send_message(msg: str) -> None:
+def send_message(msg: str) -> dict:
     """
     Publish message in RabbitMQ
 
@@ -36,6 +36,7 @@ def send_message(msg: str) -> None:
 
     connection.close()
 
+    return {"Message": "Success!"}
 
 def on_message_received(ch, method, properties, body):
     """
@@ -52,7 +53,7 @@ def on_message_received(ch, method, properties, body):
     print(res)
 
 @app.get("/")
-def retrieve_message():
+def retrieve_message() -> dict:
 
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(rabbitmq_host)
@@ -71,3 +72,5 @@ def retrieve_message():
     print("started consuming")
 
     channel.start_consuming()
+
+    return {"Message": "Success!"}

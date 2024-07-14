@@ -20,23 +20,31 @@ def send_message(msg: str) -> dict:
     Parameters
     -----------
     msg: A message to send to RabbitMQ broker
+
+    Returns
+    --------
+    dict: A dictionary containing the sent message
     """
-    print(f"sent message: {msg}")
+
+    # Connection to a broker
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(rabbitmq_host)
     )
 
     channel = connection.channel()
 
-    channel.queue_declare(queue=rabbitmq_queue)
+    # creating a que to which messages will be delivered
+    # To ensure that the queue will survive a RabbitMQ node restart, specified 'durable'
+    channel.queue_declare(queue=rabbitmq_queue, durable=True)
 
+    # Publish the message onto the que
     channel.basic_publish(exchange='', routing_key=rabbitmq_queue, body=msg)
 
-    print(f"sent message: {msg}")
-
+    # Close the connection to RabbitMQ
     connection.close()
 
     return {"Message": "Success!"}
+
 
 def on_message_received(ch, method, properties, body):
     """

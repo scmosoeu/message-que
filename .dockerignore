@@ -1,0 +1,11 @@
+__pycache__
+LICENSE
+README.md
+tests
+pytest.ini
+htmlcov
+api_env
+.pytest_cache
+.gitignore
+.coverage
+.dockerignore

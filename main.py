@@ -30,7 +30,6 @@ def send_message(msg: str) -> dict:
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(rabbitmq_host)
     )
-
     channel = connection.channel()
 
     # creating a que to which messages will be delivered
@@ -43,7 +42,7 @@ def send_message(msg: str) -> dict:
     # Close the connection to RabbitMQ
     connection.close()
 
-    return {"Message": "Success!"}
+    return {"Message": f"{msg}"}
 
 
 def on_message_received(ch, method, properties, body):

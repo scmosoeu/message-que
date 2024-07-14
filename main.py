@@ -26,7 +26,7 @@ def send_message(msg: str) -> dict:
     dict: A dictionary containing the sent message
     """
 
-    # Connection to a broker
+    # Connection to a broker, can be localhost or IP address
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(rabbitmq_host)
     )
@@ -57,27 +57,34 @@ def on_message_received(ch, method, properties, body):
 
     res = commodity_response.json()
 
-    print(res)
 
 @app.get("/")
 def retrieve_message() -> dict:
+    """
+    Retrieve a message in a que
 
+    Returns
+    --------
+    dict
+    """
+
+    # Connection to a broker, can be localhost or IP address
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(rabbitmq_host)
     )
-
     channel = connection.channel()
 
     channel.queue_declare(queue=rabbitmq_queue)
 
+    # Tell RabbitMQ that the callback function should receive messages
+    # from the queue
     channel.basic_consume(
         queue=rabbitmq_queue,
         auto_ack=True,
         on_message_callback=on_message_received
     )
 
-    print("started consuming")
-
+    # Start consuming messages in a que
     channel.start_consuming()
 
     return {"Message": "Success!"}
